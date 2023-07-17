@@ -100,5 +100,11 @@ while run:
         if ball.rect.x >= WEIGHT-50:
             finish = True
             window.blit(lose2, (200,250))
+    else:
+        finish = False
+        ball = Ball('tenis_ball.png', 200, 200, 50, 50, 2,2)
+        ball.reset()
+        ball.update()
+        time.delay(3000)
     display.update()
     clock.tick(FPS)
