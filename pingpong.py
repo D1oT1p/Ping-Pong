@@ -9,7 +9,10 @@ FPS = 60
 
 run = True
 
-
+font.init()
+font_text = font.Font(None,36)
+lose1 = font_text.render('PLAYER 1 LOSE',True,(100,0,0))
+lose2 = font_text.render('PLAYER 2 LOSE',True,(100,0,0))
 
 
 def generate_color():
@@ -50,19 +53,30 @@ class Player(GameSprite):
         if keys[K_DOWN] and self.rect.y < 350:
             self.rect.y += self.speed 
 
+
+
+class Ball(GameSprite):
+    def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed,speed_y):
+        super().__init__(player_image, player_x, player_y, size_x, size_y, player_speed)
+        self.speed_y = speed_y
+    def update(self):
+        self.rect.x += self.speed
+        self.rect.y += self.speed_y
+        if self.rect.y >= HEIGHT - 50 or self.rect.y <= 0:
+            self.speed_y *= -1
+        if sprite.collide_rect(rocketka1,ball) or sprite.collide_rect(rocketka2, ball):
+            self.speed *= -1
+            
+        
+
+
 rocketka1 = Player('racket.png', 30, 200, 50, 150, 4)
 rocketka2 = Player('racket.png', 520, 200, 50, 150, 4)
-ball = GameSprite('tenis_ball.png', 200, 200, 50, 50, 4)
+ball = Ball('tenis_ball.png', 200, 200, 50, 50, 2,2)
+
+finish = False
 
 while run:
-    window.fill(background)
-    rocketka1.reset()
-    rocketka1.update_1()
-    rocketka2.reset()
-    rocketka2.update_2()
-    ball.reset()
-    display.update()
-    clock.tick(FPS)
     for e in event.get():
         if e.type == QUIT:
             run = False
@@ -72,3 +86,19 @@ while run:
             color = False
     if color:
         background = generate_color()
+    if not finish:
+        window.fill(background)
+        rocketka1.reset()
+        rocketka1.update_1()
+        rocketka2.reset()
+        rocketka2.update_2()
+        ball.reset()
+        ball.update()
+        if ball.rect.x <= 50:
+            finish = True
+            window.blit(lose1, (200,250))
+        if ball.rect.x >= WEIGHT-50:
+            finish = True
+            window.blit(lose2, (200,250))
+    display.update()
+    clock.tick(FPS)
